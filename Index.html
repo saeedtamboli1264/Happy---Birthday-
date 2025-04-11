@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Happy Birthday Shravani</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: radial-gradient(circle at center, #fff0f5, #fbe4ee);
+      font-family: 'Segoe UI', sans-serif;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 0;
+    }
+
+    .countdown {
+      font-size: 2rem;
+      color: #c94f7c;
+      margin-bottom: 20px;
+      z-index: 2;
+    }
+
+    .message-container, .flower-3d, .name-glow {
+      display: none;
+    }
+
+    .message-container {
+      text-align: center;
+      z-index: 3;
+      animation: fadeIn 2s ease-in forwards;
+      opacity: 0;
+    }
+
+    .message-container h1 {
+      font-size: 3rem;
+      color: #c94f7c;
+      margin-bottom: 10px;
+      text-shadow: 0 0 10px #ff91a4;
+    }
+
+    .message-container p {
+      font-size: 1.3rem;
+      color: #333;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+
+    .flower-3d {
+      margin-top: 40px;
+      display: flex;
+      gap: 20px;
+      perspective: 1000px;
+      z-index: 2;
+    }
+
+    .petal {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, #ff6e91, #d81b60);
+      border-radius: 50% 50% 0 0;
+      transform-style: preserve-3d;
+      transform: rotateX(60deg) scale(0);
+      animation: bloom3D 1.5s ease-out forwards;
+      box-shadow: 0 0 20px rgba(255, 105, 135, 0.6);
+    }
+
+    .petal::after {
+      content: '';
+      position: absolute;
+      bottom: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 6px;
+      height: 40px;
+      background: #4caf50;
+      border-radius: 3px;
+    }
+
+    @keyframes bloom3D {
+      to {
+        transform: rotateX(0deg) scale(1);
+      }
+    }
+
+    .petal:nth-child(1) { animation-delay: 0.3s; }
+    .petal:nth-child(2) { animation-delay: 0.6s; }
+    .petal:nth-child(3) { animation-delay: 0.9s; }
+    .petal:nth-child(4) { animation-delay: 1.2s; }
+    .petal:nth-child(5) { animation-delay: 1.5s; }
+
+    .name-glow {
+      font-size: 4rem;
+      color: #fff;
+      text-shadow:
+        0 0 10px #ff5da2,
+        0 0 20px #ff5da2,
+        0 0 40px #ff4d94,
+        0 0 80px #e60073;
+      animation: pulse 2s infinite alternate;
+      z-index: 3;
+      margin-top: 30px;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 0.8; }
+      100% { transform: scale(1.05); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="bg"></canvas>
+
+  <div class="countdown" id="countdown">Loading...</div>
+
+  <div class="name-glow" id="name">Shravani</div>
+
+  <div class="message-container" id="message">
+    <h1>Happy Birthday</h1>
+    <p>
+      There are people who make life brighter just by being in it—and you're one of them.
+      Your presence is magic, your smile is peace, and your kindness is unmatched.
+      On your special day, I just want you to know how deeply you're appreciated and how lucky I feel to know you.
+    </p>
+  </div>
+
+  <div class="flower-3d" id="flower">
+    <div class="petal"></div>
+    <div class="petal"></div>
+    <div class="petal"></div>
+    <div class="petal"></div>
+    <div class="petal"></div>
+  </div>
+
+  <!-- Background music -->
+  <audio id="bg-music" preload="auto">
+    <source src="https://cdn.pixabay.com/audio/2022/12/13/audio_69c174f512.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    const countdownEl = document.getElementById('countdown');
+    const messageEl = document.getElementById('message');
+    const flowerEl = document.getElementById('flower');
+    const nameGlowEl = document.getElementById('name');
+    const bgMusic = document.getElementById('bg-music');
+
+    function updateCountdown() {
+      const now = new Date();
+      const midnight = new Date();
+      midnight.setHours(24, 0, 0, 0);
+      const diff = midnight - now;
+
+      if (diff <= 0) {
+        countdownEl.style.display = 'none';
+        nameGlowEl.style.display = 'block';
+        messageEl.style.display = 'block';
+        flowerEl.style.display = 'flex';
+        bgMusic.play();
+        return;
+      }
+
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+      countdownEl.innerHTML = `Counting down to midnight: ${hours}h ${minutes}m ${seconds}s`;
+    }
+
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+
+    // Floating particles
+    const canvas = document.getElementById("bg");
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let particles = [];
+    for (let i = 0; i < 100; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 1.5 + 0.5,
+        dx: (Math.random() - 0.5) * 0.5,
+        dy: (Math.random() - 0.5) * 0.5
+      });
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "rgba(255, 192, 203, 0.8)";
+      particles.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fill();
+        p.x += p.dx;
+        p.y += p.dy;
+        if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
+        if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
+      });
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+  </script>
+
+</body>
+</html>
